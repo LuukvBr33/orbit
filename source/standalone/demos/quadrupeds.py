@@ -36,6 +36,7 @@ simulation_app = app_launcher.app
 """Rest everything follows."""
 
 import numpy as np
+import os
 import torch
 import traceback
 
@@ -50,7 +51,7 @@ from omni.isaac.orbit.assets import Articulation
 ##
 from omni.isaac.orbit_assets.anymal import ANYMAL_B_CFG, ANYMAL_C_CFG, ANYMAL_D_CFG  # isort:skip
 from omni.isaac.orbit_assets.unitree import UNITREE_A1_CFG, UNITREE_GO1_CFG, UNITREE_GO2_CFG  # isort:skip
-
+from omni.isaac.orbit_assets.mini_cheetah import MINI_CHEETAH_CFG
 
 def define_origins(num_origins: int, spacing: float) -> list[list[float]]:
     """Defines the origins of the the scene."""
@@ -78,8 +79,7 @@ def design_scene() -> tuple[dict, list[list[float]]]:
 
     # Create separate groups called "Origin1", "Origin2", "Origin3"
     # Each group will have a mount and a robot on top of it
-    origins = define_origins(num_origins=6, spacing=1.25)
-
+    origins = define_origins(num_origins=7, spacing=1.25)
     # Origin 1 with Anymal B
     prim_utils.create_prim("/World/Origin1", "Xform", translation=origins[0])
     # -- Robot
@@ -110,6 +110,11 @@ def design_scene() -> tuple[dict, list[list[float]]]:
     # -- Robot
     unitree_go2 = Articulation(UNITREE_GO2_CFG.replace(prim_path="/World/Origin6/Robot"))
 
+    # Origin 7 with Mini Cheetah
+    prim_utils.create_prim("/World/Origin7", "Xform", translation=origins[6], orientation=[np.sqrt(2)/2, 0, 0, np.sqrt(2)/2])
+    # -- Robot
+    mini_cheetah = Articulation(MINI_CHEETAH_CFG.replace(prim_path="/World/Origin7/Robot"))
+
     # return the scene information
     scene_entities = {
         "anymal_b": anymal_b,
@@ -118,6 +123,7 @@ def design_scene() -> tuple[dict, list[list[float]]]:
         "unitree_a1": unitree_a1,
         "unitree_go1": unitree_go1,
         "unitree_go2": unitree_go2,
+        "mini_cheetah": mini_cheetah
     }
     return scene_entities, origins
 
@@ -131,6 +137,11 @@ def run_simulator(sim: sim_utils.SimulationContext, entities: dict[str, Articula
     # Simulate physics
     while simulation_app.is_running():
         # reset
+
+       # for key, robot in entities.items():
+            #if key == "mini_cheetah":
+               # print(robot.data.joint_pos ) 
+
         if count % 200 == 0:
             # reset counters
             sim_time = 0.0
@@ -148,13 +159,29 @@ def run_simulator(sim: sim_utils.SimulationContext, entities: dict[str, Articula
                 robot.reset()
             print("[INFO]: Resetting robots state...")
         # apply default actions to the quadrupedal robots
-        for robot in entities.values():
+
+       
+        for key, robot in entities.items():
+
+            #if count % 50 == 0:
+
+            #if key != "mini_cheetah":
             # generate random joint positions
             joint_pos_target = robot.data.default_joint_pos + torch.randn_like(robot.data.joint_pos) * 0.1
             # apply action to the robot
-            robot.set_joint_position_target(joint_pos_target)
-            # write data to sim
+            robot.set_joint_position_target(joint_pos_target) 
+
             robot.write_data_to_sim()
+
+            # if count % 10 == 0:
+            #     if key == "unitree_a1":
+            #         try:
+            #             print("Target Joint: ", joint_pos_target[0][5], "Real Joint Pos:", robot.data.joint_pos[0][5])
+            #         except:
+            #             pass
+                
+            
+            
         # perform step
         sim.step()
         # update sim-time
