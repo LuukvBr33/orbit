@@ -17,7 +17,7 @@ from omni.isaac.orbit.actuators import DCMotorCfg, ActuatorBaseCfg
 from omni.isaac.orbit.assets.articulation import ArticulationCfg
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
-relative_path = '../../../../../../data/cheetah_description/cheetah_stiff.usd'
+relative_path = '../../../../../../data/cheetah_description/cheetah_new.usd'
 file_path = os.path.join(script_dir, relative_path)
 
 ##
@@ -43,26 +43,32 @@ MINI_CHEETAH_CFG = ArticulationCfg(
     ),
     init_state=ArticulationCfg.InitialStateCfg(
         pos=(0.0, 0.0, 0.4),
+        # joint_pos = {
+        #     "LB_JOINT1": 0.01, 
+        #     "LF_JOINT1": 0.01, 
+        #     "RB_JOINT1": 0.01,
+        #     "RF_JOINT1": 0.01,
+        #     "LF_JOINT2": 0,
+        #     "RF_JOINT2": 0,
+        #     "LB_JOINT2": 0,
+        #     "RB_JOINT2": 0,
+        #     "LB_JOINT3": 0,
+        #     "LF_JOINT3": 0,
+        #     "RB_JOINT3": 0,
+        #     "RF_JOINT3": 0,
+        # }, 
         joint_pos = {
-            "LB_JOINT1": 0.01, 
-            "LF_JOINT1": 0.01, 
-            "RB_JOINT1": 0.01,
-            "RF_JOINT1": 0.01,
-            "LF_JOINT2": 0,
-            "RF_JOINT2": 0,
-            "LB_JOINT2": 0,
-            "RB_JOINT2": 0,
-            "LB_JOINT3": 0,
-            "LF_JOINT3": 0,
-            "RB_JOINT3": 0,
-            "RF_JOINT3": 0,
-        }, 
+            ".*L_hip_joint" : 0.1,
+            ".*R_hip_joint" : 0,
+            ".*_thigh_joint" : 0,
+            ".*_calf_joint": 0, 
+        },
         joint_vel={".*": 0.0},
     ),
     soft_joint_pos_limit_factor=0.9,
     actuators={
         "base_legs": DCMotorCfg(
-            joint_names_expr=[".*_JOINT1", ".*_JOINT2", ".*_JOINT3"],
+            joint_names_expr=[".*_hip_joint", ".*_thigh_joint", ".*_calf_joint"],
             effort_limit=23.5,
             saturation_effort=23.5,
             velocity_limit=30.0,

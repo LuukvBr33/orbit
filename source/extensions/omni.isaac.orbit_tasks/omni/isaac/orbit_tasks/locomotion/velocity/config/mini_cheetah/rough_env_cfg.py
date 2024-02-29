@@ -23,15 +23,15 @@ class MiniCheetahRoughEnvCfg(LocomotionVelocityRoughEnvCfg):
 
 
         # Randomization
-        self.randomization.add_base_mass.params["asset_cfg"].body_names = "BODY"
-        self.randomization.base_external_force_torque.params["asset_cfg"].body_names = "BODY"
+        self.randomization.add_base_mass.params["asset_cfg"].body_names = "base"
+        self.randomization.base_external_force_torque.params["asset_cfg"].body_names = "base"
 
-        # Rewards 
-        self.rewards.feet_air_time.params["sensor_cfg"].body_names = ".*3"
-        self.rewards.undesired_contacts.params["sensor_cfg"].body_names = ".*2"
+        # # Rewards 
+        # self.rewards.feet_air_time.params["contact_forces"].body_names = ".*_foot"
+        # self.rewards.undesired_contacts.params["contact_forces"].body_names = "*._calf"
         
         # Terminations
-        self.terminations.base_contact.params["sensor_cfg"].body_names = "BODY"
+        #self.terminations.base_contact.params["contact_forces"].body_names = "base"
 
         
 
