@@ -14,7 +14,7 @@ Reference:
 import gymnasium as gym
 
 from .amp_env_cfg import AMPFlatEnvCfg
-from .agents.rsl_rl_cfg import MiniCheetahFlatPPORunnerCfg 
+from .agents.rsl_amp_cfg import MiniCheetahAmpPpoRunnerCfg 
 
 ##
 # Register Gym environments.
@@ -27,6 +27,6 @@ gym.register(
     disable_env_checker=True,
     kwargs={
         "env_cfg_entry_point": AMPFlatEnvCfg,
-        "rsl_rl_cfg_entry_point": MiniCheetahFlatPPORunnerCfg,
+        "rsl_rl_cfg_entry_point": MiniCheetahAmpPpoRunnerCfg,
     },
 )

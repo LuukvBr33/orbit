@@ -73,6 +73,9 @@ class RslRlPpoAlgorithmCfg:
 
     max_grad_norm: float = MISSING
     """The maximum gradient norm."""
+    
+    amp_replay_buffer_size: int = MISSING
+    """The size of the replay buffer for AMP"""
 
 
 @configclass
